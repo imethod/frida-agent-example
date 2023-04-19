@@ -17,6 +17,6 @@ Process.getModuleByName("libSystem.B.dylib")
 Interceptor.attach(Module.getExportByName(null, "open"), {
     onEnter(args) {
         const path = args[0].readUtf8String();
-        log(`open() path="${path}"`);
+        log(`op22en() path="${path}"`);
     }
 });

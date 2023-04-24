@@ -1,9 +1,11 @@
-import { clsInitArray } from "../hook/link/initArray/clsInitArray";
+import { clsLink } from "../hook/link/clsLink.js"
+import "../agent/logger.js"
 
-
-setImmediate(() => main())
+setTimeout(() => main(),500)
 
 const main = () => {
-    clsDebug.DEBUG = true
-    var a = new clsInitArray(ptr(0x00000000));
+    log("main")
+    setDebug(true)
+    var a = new clsLink()
+    a.hook()
 }

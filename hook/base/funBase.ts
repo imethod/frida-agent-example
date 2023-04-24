@@ -1,8 +1,7 @@
-import { log } from "../../agent/logger.js";
-import { funInterface as InterfaceFun } from "../Interface/funInterface.js";
 
+import { funInterface} from "../Interface/funInterface.js"
 
-export class clsFunBase implements InterfaceFun {
+export class clsFunBase implements funInterface {
     address: NativePointer
     callbacks?: InvocationListenerCallbacks | InstructionProbeCallback | undefined
     replacement: NativePointerValue | undefined
@@ -12,16 +11,16 @@ export class clsFunBase implements InterfaceFun {
         if (this.callbacks == undefined) {
             Interceptor.attach(this.address, {
                 onEnter: function (args) {
-                    log("onEnter: " + this.address);
+                    log("onEnter: " + this.address)
                 },
                 onLeave: function (retval) {
-                    log("onLeave: " + retval);
+                    log("onLeave: " + retval)
                 }
-            });
+            })
         } else {
             Interceptor.attach(this.address, this.callbacks, this.data)
         }
-        Interceptor.flush(); // flush the instruction cache
+        Interceptor.flush() // flush the instruction cache
     }
     replace(replacement: NativePointerValue | undefined): void {
         this.replacement = replacement

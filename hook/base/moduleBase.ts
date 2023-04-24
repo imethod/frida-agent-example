@@ -1,14 +1,18 @@
-import { log } from "../../agent/logger";
-import { funInterface as InterfaceFun } from "../Interface/funInterface";
-import { moduleInterface } from "../Interface/moduleInterface";
-
-
+import { moduleInterface } from "../Interface/moduleInterface.js"
 export class clsModuleBase implements moduleInterface {
     soName: string
-    modle: Module
+    modle!: Module 
     constructor(soName: string) {
         this.soName = soName
-        this.modle = Module.load(soName)
+        log("clsModuleBase")
+        Process.enumerateModules().forEach(module => {
+            if (module.name == this.soName) {
+                
+                this.modle = module
+               
+            }
+            logd("module: " + module.name)
+        })
     }
 
     hook(): void{

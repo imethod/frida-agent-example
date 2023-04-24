@@ -1,15 +1,13 @@
 
-import { log } from "../../../agent/logger"
-import { clsFunBase } from "../../base/funBase"
-import { clsInitFunc } from "./clsInitFunc"
+import { clsFunBase } from "../../base/funBase.js"
+import { clsInitFunc } from "./clsInitFunc.js"
 
 export class clsInitArray extends clsFunBase  {
     initArray: Array<clsInitFunc>
-    soName: string
+    soName: string =""
 
-    constructor(ptr: NativePointer, soName: string) {
+    constructor(ptr: NativePointer) {
         super(ptr)
-        this.soName = soName
         this.initArray = new Array<clsInitFunc>()
 
     }
@@ -18,6 +16,7 @@ export class clsInitArray extends clsFunBase  {
         Interceptor.attach(this.address, {
             onEnter: function (args) {
                 if (args[1]) {
+                    hexdump(args[1])
                     log("call_array: " + args[1])
                     var aryItor: NativePointer = args[1]
                     while (1) {
@@ -25,6 +24,7 @@ export class clsInitArray extends clsFunBase  {
                         if (!func.isNull()) {
                             log("func: " + func)
                             thisObj.addInit(new clsInitFunc(func))
+
                         } else {
                             break
                         }

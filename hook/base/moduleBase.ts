@@ -1,17 +1,15 @@
-import { moduleInterface } from "../Interface/moduleInterface.js"
-export class clsModuleBase implements moduleInterface {
+import { Moduleinterface as Moduleinterface } from "../Interface/moduleInterface.js"
+export class Modulebase implements Moduleinterface {
     soName: string
     modle!: Module 
     constructor(soName: string) {
         this.soName = soName
-        log("clsModuleBase")
-        Process.enumerateModules().forEach(module => {
-            if (module.name == this.soName) {
-                
-                this.modle = module
-               
+        logd("clsModuleBase")
+        Process.enumerateModules().forEach(modle => { 
+            if (modle.name == this.soName) {
+                this.modle = modle
+                log("find modle: " + soName)
             }
-            logd("module: " + module.name)
         })
     }
 

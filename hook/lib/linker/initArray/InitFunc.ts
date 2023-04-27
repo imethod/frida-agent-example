@@ -1,6 +1,6 @@
-import { clsFunBase } from "../../base/funBase.js"
+import { FunBase } from "../../../base/funbase.js"
 
-export class clsInitFunc extends clsFunBase {
+export class Initfunc extends FunBase {
     constructor(ptr: NativePointer) {
         super(ptr)
     }

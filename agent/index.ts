@@ -1,11 +1,14 @@
-import { clsLink } from "../hook/link/clsLink.js"
+import { Link } from "../hook/lib/linker/linker.js"
 import "../agent/logger.js"
+import { Art } from "../hook/lib/art/art.js"
 
-setTimeout(() => main(),500)
+setImmediate(() => main())
 
 const main = () => {
-    log("main")
+    logd("main")
     setDebug(true)
-    var a = new clsLink()
+    var a = new Link()
+    var b = new Art()
     a.hook()
+    b.hook()
 }

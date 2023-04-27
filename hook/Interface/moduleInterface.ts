@@ -1,4 +1,4 @@
-export interface moduleInterface {
+export interface Moduleinterface {
     soName: string
     modle: Module
     hook(): void

@@ -1,4 +1,4 @@
-export  interface funInterface {
+export  interface Funinterface {
     address: NativePointer
     callbacks?: InvocationListenerCallbacks | InstructionProbeCallback | undefined
     replacement?: NativePointerValue | undefined

@@ -18,7 +18,7 @@ export class logger {
     static logd = (msg: string): void => {
 
         if (logger.debug) {
-            console.debug(msg)
+            console.warn(msg);
         } 
     }
 }

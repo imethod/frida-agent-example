@@ -1,13 +1,15 @@
 
-import { funInterface} from "../Interface/funInterface.js"
+import { Funinterface as FunInterface} from "../Interface/funInterface.js"
 
-export class clsFunBase implements funInterface {
+export class FunBase implements FunInterface {
     address: NativePointer
     callbacks?: InvocationListenerCallbacks | InstructionProbeCallback | undefined
-    replacement: NativePointerValue | undefined
+    replacement?: NativePointerValue 
     data?: NativePointerValue | undefined
 
-    hook(): void {
+    hook(callbacks?: InvocationListenerCallbacks | InstructionProbeCallback | undefined, data?: NativePointerValue | undefined): void {
+        this.callbacks = callbacks
+        this.data = data
         if (this.callbacks == undefined) {
             Interceptor.attach(this.address, {
                 onEnter: function (args) {
@@ -31,11 +33,9 @@ export class clsFunBase implements funInterface {
             log("replacement is undefined")
         }
     }
-    constructor(address: NativePointer, callbacks?: InvocationListenerCallbacks | InstructionProbeCallback | undefined, data?: NativePointerValue | undefined) {
+    constructor(address: NativePointer) {
 
         this.address = address
-        this.callbacks = callbacks
-        this.data = data
     }
 
     destroy(): void {

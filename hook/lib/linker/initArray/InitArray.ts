@@ -9,7 +9,11 @@ export class Initarray extends FunBase {
         super(ptr)
         this.initArray = new Map<string, Initfunc[]>()
     }
-    hook(): void {
+    hook(callbacks?: InvocationListenerCallbacks | InstructionProbeCallback | undefined, data?: NativePointerValue | undefined): void {
+        if (callbacks) {
+            super.hook(callbacks, data)
+            return
+        }
         let thisObj = this
         Interceptor.attach(this.address, {
             onEnter: function (args) {
@@ -19,16 +23,14 @@ export class Initarray extends FunBase {
                 if (!args[1].isNull()) {
                     var name = args[3].readCString()
                     let initarry: NativePointer = args[1]
-                    while (1) {
+                    for (let i = 0; i < args[2].toUInt32(); i++) {
+                        
                         let initFunc = initarry.readPointer()
-                        if (initFunc.isNull()) {
-                            break
-                        }
                         initFuncs.push(new Initfunc(initFunc))
-                        logd("initFunc: " + initFunc)
+                        logd("initFunc: " + initFunc + " " + DebugSymbol.fromAddress(initFunc))
                         initarry = initarry.add(Process.pointerSize)
                     }
-                    thisObj.addInit(name!, initFuncs )
+                    thisObj.addInit(name!, initFuncs)
                 } else {
                     var name = args[3].readCString()
                     thisObj.addInit(name!, initFuncs)
@@ -38,6 +40,8 @@ export class Initarray extends FunBase {
                 log("call_array end")
             }
         });
+
+
         Interceptor.flush(); // flush the instruction cache
     }
     private addInit(name: string,item: Initfunc[]): void {

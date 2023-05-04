@@ -9,39 +9,57 @@ export class Link extends Modulebase {
     dlopen!: Dlopen
     dlopen_ext!: Dlopen_ext
     constructor(soName: string = "linker64") {
+        if (Process.arch == "arm") {
+            soName = "linker"
+        }
         super(soName)
+
+        this.newLoadLibrary()
+        this.newInitArray()
     }
     emnuInitArray(): void{
     }
     hook(): void {
-        this.hookLoadLibrary()
-        this.hookInitArray()
+        this.initArray.hook()
+        this.dlopen.hook()
+        this.dlopen_ext.hook()
     }
 
-    hookLoadLibrary(): void { 
+    newLoadLibrary(): void { 
         logd("clsLink:hookDlopen")
         this.modle.enumerateExports().forEach(symbol => {
             if (symbol.name == "__loader_dlopen") {
                 logd("find __loader_dlopen")
                 this.dlopen = new Dlopen(symbol.address)
-                this.dlopen.hook()
             }
             if (symbol.name == ("__loader_android_dlopen_ext")) {
                 logd("find __loader_android_dlopen_ext")
                 this.dlopen_ext = new Dlopen_ext(symbol.address)
-                this.dlopen_ext.hook()
             }
         })
     }
 
-    hookInitArray(): void {
+    newInitArray(): void {
         logd("clsLink:hookInitArray")
         this.modle.enumerateSymbols().forEach(symbol => {
+            if (Process.arch == "arm") {
+                //__dl__ZL10call_arrayIPFviPPcS1_EEvPKcPT_jbS5_
+                if (symbol.name == "__dl__ZL10call_arrayIPFviPPcS1_EEvPKcPT_jbS5_") {
+                    this.initArray = new Initarray(symbol.address)
+
+                    log("find __dl__ZL10call_arrayIPFviPPcS1_EEvPKcPT_jbS5_")
+                }
+
+            } else {
             if (symbol.name == "__dl__ZL10call_arrayIPFviPPcS1_EEvPKcPT_mbS5_") {
-                log("find __dl__ZL10call_arrayIPFviPPcS1_EEvPKcPT_mbS5_")
                 this.initArray = new Initarray(symbol.address)
-                this.initArray.hook()
+
+                log("find __dl__ZL10call_arrayIPFviPPcS1_EEvPKcPT_mbS5_")
             }
+
+             }
+
+           
         })
     }
 }

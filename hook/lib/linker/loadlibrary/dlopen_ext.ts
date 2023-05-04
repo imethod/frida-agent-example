@@ -1,18 +1,29 @@
 import { FunBase as FunBase } from "../../../base/funbase.js";
 
 export class Dlopen_ext extends FunBase {
-    hook(): void {
+    loadModule!: string[]
+    constructor(address: NativePointer) {
+        super(address)
+        this.loadModule = []
+    }
+    hook(callbacks?: InvocationListenerCallbacks | InstructionProbeCallback | undefined, data?: NativePointerValue | undefined): void {
+        if (callbacks) {
+            super.hook(callbacks, data)
+            return
+        }
+        let thisObj = this
         super.hook({
             onEnter: function (args) {
                 var pathptr = args[0];
                 if (pathptr) {
                     this.path = (pathptr).readCString();
-                    log("android_dlopen_ext:" + this.path);
+                    thisObj.loadModule.push(this.path);
+                    log("dlopen_ext:" + this.path);
                 }
             },
             onLeave: function (retval) {
-                logd("android_dlopen_ext end")
+                logd("dlopen_ext end")
             }
-        })
+        }, callbacks)
     }
 }

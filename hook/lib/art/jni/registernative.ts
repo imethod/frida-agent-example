@@ -1,13 +1,17 @@
 import { FunBase } from "../../../base/funbase.js";
 import { NativeMethod } from "./data/nativenethod.js";
 
-export class RegisterNative extends FunBase{
+export class RegisterNative extends FunBase {
     nativeMethods: NativeMethod[]
-    constructor(addr:NativePointer){
+    constructor(addr: NativePointer) {
         super(addr)
         this.nativeMethods = []
     }
-    hook() {
+    hook(callbacks?: InvocationListenerCallbacks | InstructionProbeCallback | undefined, data?: NativePointerValue | undefined): void {
+        if (callbacks) {
+            super.hook(callbacks, data)
+            return
+        }
         let thisObj = this
         Interceptor.attach(this.address, {
             onEnter: function (args) {
@@ -15,7 +19,7 @@ export class RegisterNative extends FunBase{
                 let java_class = args[1];
                 let class_name = Java.vm.tryGetEnv().getClassName(java_class);
                 //console.log(class_name);
-
+                
                 let methods_ptr = args[2];
 
                 let method_count = args[3].toUInt32();
@@ -35,5 +39,6 @@ export class RegisterNative extends FunBase{
             onLeave: function (retval) {
             }
         });
+
     }
 }

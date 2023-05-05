@@ -1088,7 +1088,7 @@ export class VM {
     /**
      * Set the options of the VM
      *
-     * @param  {Options}  options  The new options of the VM.
+     * @param  {Number}  options  The new options of the VM.
      */
     setOptions(options) {
         QBDI_C.setOptions(this.#vm, options);

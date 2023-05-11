@@ -5,12 +5,12 @@ export class Qbdi{
     address: NativePointer
     constructor(address: NativePointer) { 
         this.address = address
-        Module.load("/data/local/tmp/libQBDI.so")
+        Module.load("/data/local/tmp/libQBDI64.so")
 
         let vm = new VM();
         vm.allocateVirtualStack(vm.getGPRState(), 0x100000);
         vm.addInstrumentedModuleFromAddr(this.address.toUInt32())
-
+        
         let module = Process.findModuleByAddress(this.address)
         logd("modle base: " + module!.base)
         let user_data = {

@@ -32,7 +32,7 @@ export class DumpSo {
             for (var i = 0; i < pGot.length; i++) {
                 var addr = pGot[i]
                 var funcName = DebugSymbol.fromAddress(ptr(addr)).toString().split("!")[1]
-                logd("pgot:" + i + " " + ptr(addr) + " " + funcName)
+                logd("pgot1:" + i + " " + ptr(addr) + " " + funcName)
                 table.forEach(function (item: any) {
                     var name = item["value"].toString()
                     if (funcName?.indexOf(name) !=-1 && funcName?.length > 0) {

@@ -843,7 +843,7 @@ class State {
 /**
  * General Purpose Register context
  */
-class GPRState extends State  {
+export class GPRState extends State  {
     _getGPRId(rid) {
         if (typeof(rid) === 'string') {
             rid = GPR_NAMES.indexOf(rid.toUpperCase());
@@ -915,11 +915,12 @@ class GPRState extends State  {
      *
      * @param                   FridaCtx   Frida context
      * @param {String|Number}   rid        Register (register name or ID can be used e.g : "RAX", "rax", 0)
-     * @param {SyncDirection}   direction  Synchronization direction. (:js:data:`FRIDA_TO_QBDI` or :js:data:`QBDI_TO_FRIDA`)
+     * @param {Number}   direction  Synchronization direction. (:js:data:`FRIDA_TO_QBDI` or :js:data:`QBDI_TO_FRIDA`)
      */
     synchronizeRegister(FridaCtx, rid, direction) {
         if (direction === SyncDirection.FRIDA_TO_QBDI) {
-            this.setRegister(rid, FridaCtx[rid.toLowerCase()].toRword());
+            console.log(rid.toLowerCase())
+            this.setRegister(rid, ptr(FridaCtx[rid.toLowerCase()]).toUInt32());
         }
         else { // FRIDA_TO_QBDI
             FridaCtx[rid.toLowerCase()] = ptr(this.getRegister(rid).toString());
@@ -932,12 +933,15 @@ class GPRState extends State  {
      * .. warning:: Currently QBDI_TO_FRIDA is not implemented (due to Frida limitations).
      *
      * @param                   FridaCtx   Frida context
-     * @param {SyncDirection}   direction  Synchronization direction. (:js:data:`FRIDA_TO_QBDI` or :js:data:`QBDI_TO_FRIDA`)
+     * @param {numb}   direction  Synchronization direction. (:js:data:`FRIDA_TO_QBDI` or :js:data:`QBDI_TO_FRIDA`)
      */
     synchronizeContext(FridaCtx, direction) {
         for (var i in GPR_NAMES) {
             if (GPR_NAMES[i] === "EFLAGS" || GPR_NAMES[i] === "FS" || GPR_NAMES[i] === "GS") {
                 continue;
+            }
+            if (GPR_NAMES[i] == "FP") {
+                break;
             }
             this.synchronizeRegister(FridaCtx, GPR_NAMES[i], direction);
         }
@@ -993,7 +997,7 @@ class GPRState extends State  {
 /**
  * Floating Point Register context
  */
-class FPRState extends State {
+export class FPRState extends State {
     static validOrThrow(state) {
         if (!FPRState.prototype.isPrototypeOf(state)) {
             throw new TypeError('Invalid FPRState');
@@ -1365,7 +1369,7 @@ export class VM {
     /**
      * Register a callback event for a specific instruction event.
      *
-     * @param {InstPosition} pos       Relative position of the callback (PreInst / PostInst).
+     * @param {Number} pos       Relative position of the callback (PreInst / PostInst).
      * @param {InstCallback} cbk       A **native** InstCallback returned by :js:func:`VM.newInstCallback`.
      * @param {Object}       data      User defined data passed to the callback.
      * @param {Int}          priority  The priority of the callback.
@@ -1402,7 +1406,7 @@ export class VM {
      *
      * @param {String|Number} start     Start of the address range which will trigger the callback.
      * @param {String|Number} end       End of the address range which will trigger the callback.
-     * @param {InstPosition}  pos       Relative position of the callback (PreInst / PostInst).
+     * @param {Number}  pos       Relative position of the callback (PreInst / PostInst).
      * @param {InstCallback}  cbk       A **native** InstCallback returned by :js:func:`VM.newInstCallback`.
      * @param {Object}        data      User defined data passed to the callback.
      * @param {Int}           priority  The priority of the callback.
@@ -1419,7 +1423,7 @@ export class VM {
     /**
      * Register a callback event for a specific VM event.
      *
-     * @param {VMEvent}    mask   A mask of VM event type which will trigger the callback.
+     * @param {Number}    mask   A mask of VM event type which will trigger the callback.
      * @param {VMCallback} cbk    A **native** VMCallback returned by :js:func:`VM.newVMCallback`.
      * @param {Object}     data   User defined data passed to the callback.
      *

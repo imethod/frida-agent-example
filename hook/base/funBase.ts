@@ -8,6 +8,7 @@ export class FunBase implements FunInterface {
     data?: NativePointerValue | undefined
 
     hook(callbacks?: InvocationListenerCallbacks | InstructionProbeCallback | undefined, data?: NativePointerValue | undefined): void {
+        logd("FunBase:hook" + this.address)
         this.callbacks = callbacks
         this.data = data
         if (this.callbacks == undefined) {
@@ -41,6 +42,7 @@ export class FunBase implements FunInterface {
     destroy(): void {
         if (this.address != undefined) {
             Interceptor.revert(this.address)
+            Interceptor.flush()
         }
     }
 

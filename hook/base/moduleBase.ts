@@ -9,6 +9,7 @@ export class Modulebase implements Moduleinterface {
             if (modle.name == this.soName) {
                 this.modle = modle
                 log("find modle: " + soName)
+                log("find modle: " + modle.base)
             }
         })
     }
